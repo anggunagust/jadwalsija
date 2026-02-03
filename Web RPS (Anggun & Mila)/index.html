@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Jadwal Pemakaian RPS</title>
+
+<style>
+:root{
+  --orange:#ff7a18;
+  --orange-dark:#e66500;
+  --cream:#fff4e6;
+  --bg:#f7f7f7;
+}
+*{box-sizing:border-box;font-family:Arial,Helvetica,sans-serif}
+body{margin:0;background:var(--bg);color:#333}
+
+/* ===== HEADER ===== */
+header{
+  background:linear-gradient(90deg,var(--orange),var(--orange-dark));
+  color:#fff;padding:16px 20px
+}
+.header-wrap{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:16px
+}
+.title h1{margin:0;font-size:22px}
+.title small{opacity:.9}
+
+/* ===== LOGO AREA (REVISI UTAMA) ===== */
+.logos{
+  display:flex;
+  align-items:center;
+  gap:12px;
+}
+.logos img{
+  height:56px;
+  background:#fff;
+  padding:6px;
+  border-radius:12px;
+  object-fit:contain;
+  box-shadow:0 3px 8px rgba(0,0,0,.25);
+}
+
+/* JAM */
+.time-box{
+  background:rgba(255,255,255,.25);
+  padding:8px 14px;
+  border-radius:10px;
+  font-weight:bold;
+  min-width:90px;
+  text-align:center
+}
+
+/* ===== NAV ===== */
+nav{
+  background:var(--orange-dark);
+  display:flex;
+  gap:10px;
+  padding:10px;
+  flex-wrap:wrap
+}
+nav button{
+  border:none;cursor:pointer;
+  padding:8px 14px;
+  border-radius:10px;
+  background:#ff944d;
+  color:#fff;
+  font-weight:600
+}
+nav button.active{
+  background:#fff;
+  color:var(--orange-dark)
+}
+
+/* ===== CONTENT ===== */
+main{padding:16px}
+.card{
+  background:#fff;
+  border-radius:14px;
+  padding:16px;
+  box-shadow:0 8px 20px rgba(0,0,0,.08)
+}
+h2{color:var(--orange-dark);margin-top:0}
+.judul-info{color:var(--orange)}
+
+table{width:100%;border-collapse:collapse}
+th,td{padding:10px;border-bottom:1px solid #eee}
+th{background:var(--cream)}
+tr:hover{background:#fff9f3}
+
+.badge{
+  padding:4px 8px;
+  border-radius:8px;
+  font-size:12px;
+  font-weight:600
+}
+.used{background:#d1fae5;color:#065f46}
+.empty{background:#fee2e2;color:#7f1d1d}
+
+/* ===== FOOTER ===== */
+footer{
+  background:#9a3d00;
+  color:#fff;
+  text-align:center;
+  padding:12px;
+  font-size:13px
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <div class="header-wrap">
+    <div class="title">
+      <h1>Jadwal Pemakaian RPS</h1>
+      <small>SMKN 1 Punggelan</small>
+    </div>
+
+    <div class="logos">
+      <!-- GANTI FILE LOGO SESUAI NAMA FILE KAMU -->
+      <img src="logo-sekolah.png" alt="Logo Sekolah">
+      <img src="logo-jurusan.png" alt="Logo Jurusan">
+      <div class="time-box" id="clock">--:--:--</div>
+    </div>
+  </div>
+</header>
+
+<nav>
+  <button class="active" onclick="showTab('jadwal',this)">📅 Jadwal</button>
+  <button onclick="showTab('today',this)">⏰ Hari Ini</button>
+  <button onclick="showTab('rps',this)">🏫 RPS</button>
+  <button onclick="showTab('info',this)">ℹ️ Info</button>
+</nav>
+
+<main>
+  <section id="jadwal" class="card"></section>
+  <section id="today" class="card" style="display:none"></section>
+  <section id="rps" class="card" style="display:none"></section>
+
+  <section id="info" class="card" style="display:none">
+    <h2 class="judul-info">Keterangan</h2>
+    <ul>
+      <li>RPS 1–5 = RPS aktif</li>
+      <li>RPS Kosong = tidak terpakai</li>
+      <li>Istirahat 1: 10.00–10.15</li>
+      <li>Istirahat 2: 11.45–12.15</li>
+    </ul>
+
+    <b>📋 Tata Tertib Penggunaan RPS</b>
+    <ol>
+      <li>Hadir tepat waktu sesuai jadwal.</li>
+      <li>Menjaga kebersihan ruang praktik.</li>
+      <li>Menggunakan peralatan dengan tanggung jawab.</li>
+      <li>Melapor jika ada kerusakan alat.</li>
+    </ol>
+  </section>
+</main>
+
+<footer>
+© 2026 Sistem Jadwal Pemakaian RPS – SMKN 1 Punggelan
+</footer>
+
+<script>
+/* JAM REALTIME */
+function updateClock(){
+  document.getElementById('clock').innerText =
+    new Date().toLocaleTimeString('id-ID');
+}
+setInterval(updateClock,1000);updateClock();
+
+/* ================= DATA JADWAL ================= */
+const jadwal = {
+  Senin: [
+    {jam:'07.00–08.30',kelas:'X PPLG',mapel:'Informatika',guru:'Hermanto',rps:'RPS 1'},
+    {jam:'08.30–10.00',kelas:'X PPLG',mapel:'DDPPLG 1',guru:'Sri Herawan',rps:'RPS 2'},
+    {jam:'10.15–11.45',kelas:'XI SIJA',mapel:'Sistem Keamanan Jaringan',guru:'Idiarso',rps:'RPS 1'},
+    {jam:'12.15–13.45',kelas:'XI SIJA',mapel:'Layanan KA',guru:'Hermanto',rps:'RPS 4'},
+    {jam:'13.45–14.55',kelas:'XII SIJA',mapel:'RPS KOSONG',guru:'—',rps:'—'}
+  ],
+  Selasa: [
+    {jam:'07.00–08.30',kelas:'X PPLG',mapel:'DDPPLG 2',guru:'Kiat Uji',rps:'RPS 3'},
+    {jam:'08.30–10.00',kelas:'X PPLG',mapel:'GIM',guru:'Kiat Uji',rps:'RPS 3'},
+    {jam:'10.15–11.45',kelas:'XI SIJA',mapel:'Sistem IoT',guru:'Syaifudin',rps:'RPS 2'},
+    {jam:'12.15–13.45',kelas:'XI SIJA',mapel:'Infrastruktur KA',guru:'Gunawan',rps:'RPS 3'},
+    {jam:'13.45–14.55',kelas:'XII SIJA',mapel:'RPS KOSONG',guru:'—',rps:'—'}
+  ],
+  Rabu: [
+    {jam:'07.00–08.30',kelas:'X PPLG',mapel:'RPS KOSONG',guru:'—',rps:'—'},
+    {jam:'08.30–10.00',kelas:'X PPLG',mapel:'DDPPLG & GIM 1',guru:'Sri Herawan',rps:'RPS 2'},
+    {jam:'10.15–11.45',kelas:'X PPLG',mapel:'RPS KOSONG',guru:'—',rps:'—'},
+    {jam:'12.15–13.45',kelas:'X PPLG',mapel:'Informatika',guru:'Hermanto',rps:'RPS 1'},
+    {jam:'13.45–14.55',kelas:'XI SIJA',mapel:'RPS KOSONG',guru:'—',rps:'—'}
+  ],
+  Kamis: [
+    {jam:'07.00–08.30',kelas:'XI SIJA',mapel:'Sistem IoT',guru:'Syaifudin',rps:'RPS 2'},
+    {jam:'08.30–10.00',kelas:'XI SIJA',mapel:'RPS KOSONG',guru:'—',rps:'—'},
+    {jam:'10.15–11.45',kelas:'XI SIJA',mapel:'Infrastruktur KA',guru:'Gunawan',rps:'RPS 3'},
+    {jam:'12.15–13.45',kelas:'XI SIJA',mapel:'Layanan KA',guru:'Hermanto',rps:'RPS 4'},
+    {jam:'13.45–14.55',kelas:'XII SIJA',mapel:'RPS KOSONG',guru:'—',rps:'—'}
+  ],
+  Jumat: [
+    {jam:'07.00–08.30',kelas:'XII SIJA',mapel:'RPS KOSONG',guru:'—',rps:'—'},
+    {jam:'08.30–10.00',kelas:'XII SIJA',mapel:'Sistem Keamanan Jaringan',guru:'Idiarso',rps:'RPS 1'},
+    {jam:'10.15–11.45',kelas:'XII SIJA',mapel:'RPS KOSONG',guru:'—',rps:'—'},
+    {jam:'12.15–13.45',kelas:'X PPLG',mapel:'RPS KOSONG',guru:'—',rps:'—'}
+  ]
+};
+
+/* ================= RENDER ================= */
+function renderJadwal(){
+  let h='<h2>Jadwal Keseluruhan</h2>';
+  for(const hari in jadwal){
+    h+=`<h3>${hari}</h3>
+    <table>
+      <tr>
+        <th>Jam</th><th>Kelas</th><th>Mapel</th><th>Guru</th><th>RPS</th>
+      </tr>`;
+    jadwal[hari].forEach(j=>{
+      h+=`<tr>
+        <td>${j.jam}</td>
+        <td>${j.kelas}</td>
+        <td>${j.mapel}</td>
+        <td>${j.guru}</td>
+        <td>${j.rps}</td>
+      </tr>`;
+    });
+    h+='</table><br>';
+  }
+  document.getElementById('jadwal').innerHTML=h;
+}
+
+function renderToday(){
+  const hari=new Date().toLocaleDateString('id-ID',{weekday:'long'});
+  const data=jadwal[hari]||[];
+  let h=`<h2>Jadwal Hari Ini (${hari})</h2>`;
+  if(!data.length){
+    h+='<p>Tidak ada jadwal.</p>';
+  }else{
+    h+='<table><tr><th>Jam</th><th>Kelas</th><th>Mapel</th><th>Guru</th><th>RPS</th></tr>';
+    data.forEach(j=>{
+      h+=`<tr>
+        <td>${j.jam}</td><td>${j.kelas}</td>
+        <td>${j.mapel}</td><td>${j.guru}</td><td>${j.rps}</td>
+      </tr>`;
+    });
+    h+='</table>';
+  }
+  document.getElementById('today').innerHTML=h;
+}
+
+function renderRps(){
+  let dipakai=[];
+  for(const h in jadwal){
+    jadwal[h].forEach(j=>{
+      if(j.rps.startsWith('RPS')) dipakai.push(j.rps);
+    });
+  }
+  let h='<h2>Status RPS</h2><table><tr><th>RPS</th><th>Status</th></tr>';
+  ['RPS 1','RPS 2','RPS 3','RPS 4','RPS 5'].forEach(r=>{
+    h+=`<tr>
+      <td>${r}</td>
+      <td><span class="badge ${dipakai.includes(r)?'used':'empty'}">
+      ${dipakai.includes(r)?'Terpakai':'Kosong'}
+      </span></td>
+    </tr>`;
+  });
+  h+='</table>';
+  document.getElementById('rps').innerHTML=h;
+}
+
+function showTab(id,btn){
+  document.querySelectorAll('nav button').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  document.querySelectorAll('main section').forEach(s=>s.style.display='none');
+  document.getElementById(id).style.display='block';
+}
+
+renderJadwal();
+renderToday();
+renderRps();
+</script>
+
+</body>
+</html>
